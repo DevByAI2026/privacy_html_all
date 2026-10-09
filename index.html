@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>隐私政策与支持</title>
+<style>
+  body { font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif; max-width: 720px; margin: 40px auto; padding: 0 20px; line-height: 1.7; color: #222; }
+  h1 { font-size: 1.8em; }
+  ul { list-style: none; padding: 0; }
+  li { margin: 0; }
+  a.item { display: block; padding: 14px 18px; margin: 10px 0; border: 1px solid #e3e3e3; border-radius: 10px; text-decoration: none; color: #1a5fb4; font-size: 1.08em; transition: background .15s, border-color .15s; }
+  a.item:hover { background: #f5f8ff; border-color: #b9cdf0; }
+  .meta { color: #777; font-size: .85em; margin-top: 2.5em; }
+  .en { color: #555; }
+  .hint { color: #888; }
+</style>
+</head>
+<body>
+<h1>隐私政策与支持</h1>
+<p class="en">Privacy policies &amp; support pages</p>
+
+<p id="status" class="hint">正在加载…</p>
+<ul id="list">
+  <li><a class="item" href="Paintboard_privacy.html">画板（Paintboard） · 隐私政策与支持</a></li>
+</ul>
+
+<p class="meta">本页自动列出本仓库中的所有 HTML 文档。新增文件后刷新即可看到。<br>
+This page lists every HTML document in this repository automatically.</p>
+
+<script>
+(function () {
+  var REPO = 'DevByAI2026/privacy_html_all';
+  var list = document.getElementById('list');
+  var status = document.getElementById('status');
+
+  function prettify(name) {
+    return name.replace(/\.html?$/i, '').replace(/[_-]?(privacy|policy)$/i, '').replace(/[_-]+/g, ' ').trim() || name;
+  }
+
+  function render(files) {
+    if (!files.length) {
+      status.textContent = '暂时没有可显示的文档。';
+      return;
+    }
+    list.innerHTML = '';
+    files.forEach(function (name) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.className = 'item';
+      a.href = encodeURIComponent(name);
+      a.textContent = prettify(name);
+      li.appendChild(a);
+      list.appendChild(li);
+    });
+    status.textContent = '共 ' + files.length + ' 份文档';
+  }
+
+  fetch('https://api.github.com/repos/' + REPO + '/contents/', { headers: { Accept: 'application/vnd.github+json' } })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (items) {
+      var files = items
+        .filter(function (i) { return i.type === 'file' && /\.html?$/i.test(i.name) && i.name.toLowerCase() !== 'index.html'; })
+        .map(function (i) { return i.name; })
+        .sort();
+      render(files);
+    })
+    .catch(function () {
+      status.textContent = '无法自动加载文档列表，已显示默认内容（上方链接仍可正常访问）。';
+    });
+})();
+</script>
+</body>
+</html>
